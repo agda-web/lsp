@@ -57,7 +57,7 @@ import Data.Ord (Down (Down))
 import Data.Row
 import Data.Text (Text)
 import Data.Text qualified as T
-import Data.UUID qualified as UUID
+import qualified Data.UUID.Types
 import Language.LSP.Diagnostics
 import Language.LSP.Protocol.Capabilities
 import Language.LSP.Protocol.Lens qualified as L
@@ -571,7 +571,7 @@ registerCapability method regOpts f = do
   go clientCaps False
     -- First, check to see if the client supports dynamic registration on this method
     | dynamicRegistrationSupported method clientCaps = do
-        uuid <- liftIO $ UUID.toText <$> getStdRandom random
+        uuid <- liftIO $ Data.UUID.Types.toText <$> getStdRandom random
         let registration = L.TRegistration uuid method (Just regOpts)
             params = L.RegistrationParams [toUntypedRegistration registration]
             regId = RegistrationId uuid
