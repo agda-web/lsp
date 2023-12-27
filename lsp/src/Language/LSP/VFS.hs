@@ -8,7 +8,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeInType #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE ViewPatterns #-}
@@ -135,8 +134,33 @@ instance Pretty VfsLog where
     "VFS: can't recursively delete" <+> pretty uri <+> "because we don't track directory status"
   pretty (DeleteNonExistent uri) = "VFS: asked to delete non-existent file" <+> pretty uri
 
-makeFieldsNoPrefix ''VirtualFile
-makeFieldsNoPrefix ''VFS
+class HasFile_text s a | s -> a where
+  file_text :: Lens' s a
+instance HasFile_text VirtualFile Rope where
+  {-# INLINE file_text #-}
+  file_text f_asr4 (VirtualFile x1_asr5 x2_asr6 x3_asr7)
+    = fmap
+        (\ y1_asr8 -> VirtualFile x1_asr5 x2_asr6 y1_asr8) (f_asr4 x3_asr7)
+class HasFile_version s a | s -> a where
+  file_version :: Lens' s a
+instance HasFile_version VirtualFile Int where
+  {-# INLINE file_version #-}
+  file_version f_asr9 (VirtualFile x1_asra x2_asrb x3_asrc)
+    = fmap
+        (\ y1_asrd -> VirtualFile x1_asra y1_asrd x3_asrc) (f_asr9 x2_asrb)
+class HasLsp_version s a | s -> a where
+  lsp_version :: Lens' s a
+instance HasLsp_version VirtualFile Int32 where
+  {-# INLINE lsp_version #-}
+  lsp_version f_asre (VirtualFile x1_asrf x2_asrg x3_asrh)
+    = fmap
+        (\ y1_asri -> VirtualFile y1_asri x2_asrg x3_asrh) (f_asre x1_asrf)
+
+class HasVfsMap s a | s -> a where
+  vfsMap :: Lens' s a
+instance HasVfsMap VFS (Map.Map J.NormalizedUri VirtualFile) where
+  {-# INLINE vfsMap #-}
+  vfsMap = iso (\ (VFS x_asuW) -> x_asuW) VFS
 
 ---
 
@@ -392,8 +416,34 @@ data CodePointRange = CodePointRange
   }
   deriving (Show, Read, Eq, Ord)
 
-makeFieldsNoPrefix ''CodePointPosition
-makeFieldsNoPrefix ''CodePointRange
+class HasCharacter s a | s -> a where
+  character :: Lens' s a
+instance HasCharacter CodePointPosition J.UInt where
+  {-# INLINE character #-}
+  character f_avHX (CodePointPosition x1_avHY x2_avHZ)
+    = fmap
+        (\ y1_avI0 -> CodePointPosition x1_avHY y1_avI0) (f_avHX x2_avHZ)
+class HasLine s a | s -> a where
+  line :: Lens' s a
+instance HasLine CodePointPosition J.UInt where
+  {-# INLINE line #-}
+  line f_avI1 (CodePointPosition x1_avI2 x2_avI3)
+    = fmap
+        (\ y1_avI4 -> CodePointPosition y1_avI4 x2_avI3) (f_avI1 x1_avI2)
+class HasEnd s a | s -> a where
+  end :: Lens' s a
+instance HasEnd CodePointRange CodePointPosition where
+  {-# INLINE end #-}
+  end f_avKg (CodePointRange x1_avKh x2_avKi)
+    = fmap
+        (\ y1_avKj -> CodePointRange x1_avKh y1_avKj) (f_avKg x2_avKi)
+class HasStart s a | s -> a where
+  start :: Lens' s a
+instance HasStart CodePointRange CodePointPosition where
+  {-# INLINE start #-}
+  start f_avKk (CodePointRange x1_avKl x2_avKm)
+    = fmap
+        (\ y1_avKn -> CodePointRange y1_avKn x2_avKm) (f_avKk x1_avKl)
 
 {- Note [Converting between code points and code units]
 This is inherently a somewhat expensive operation, but we take some care to minimize the cost.

@@ -49,7 +49,7 @@ library
     Language.LSP.Server.Core
     Language.LSP.Server.Processing
 
-  ghc-options:        -Wall
+  ghc-options:        -Wall -ddump-splices -ddump-to-file
   build-depends:
     , aeson                 >=1.0.0.0
     , async                 >=2.0

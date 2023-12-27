@@ -71,6 +71,7 @@ library
   build-depends:
     , aeson             >=1.2.2.0 && <2.3
     , base              >=4.11    && <5
+    , bytestring
     , binary
     , containers
     , data-default
@@ -516,41 +517,41 @@ library
     Language.LSP.Protocol.Internal.Types.WorkspaceSymbolRegistrationOptions
     Language.LSP.Protocol.Internal.Types.WorkspaceUnchangedDocumentDiagnosticReport
 
-library metamodel
-  -- We don't currently re-export this from the main
-  -- library, but it's here if people want it
-  visibility: public
-  hs-source-dirs:     metamodel
-  default-language:   Haskell2010
-  default-extensions: StrictData ImportQualifiedPost
-  exposed-modules:
-    Language.LSP.MetaModel
-    Language.LSP.MetaModel.Types
+-- library metamodel
+--   -- We don't currently re-export this from the main
+--   -- library, but it's here if people want it
+--   visibility: public
+--   hs-source-dirs:     metamodel
+--   default-language:   Haskell2010
+--   default-extensions: StrictData ImportQualifiedPost
+--   exposed-modules:
+--     Language.LSP.MetaModel
+--     Language.LSP.MetaModel.Types
+-- 
+--   build-depends:
+--     , aeson             >=1.2.2.0
+--     , base              >=4.11    && <5
+--     , file-embed
+--     , lens              >=4.15.2
+--     , template-haskell
+--     , text
 
-  build-depends:
-    , aeson             >=1.2.2.0
-    , base              >=4.11    && <5
-    , file-embed
-    , lens              >=4.15.2
-    , template-haskell
-    , text
-
-executable generator
-  hs-source-dirs:     generator
-  default-language:   Haskell2010
-  default-extensions: StrictData ImportQualifiedPost
-  main-is:            Main.hs
-  other-modules:      CodeGen
-  build-depends:
-    , base                 >=4.11 && <5
-    , containers
-    , directory
-    , filepath
-    , lsp-types:metamodel
-    , mtl
-    , prettyprinter
-    , regex
-    , text
+-- executable generator
+--   hs-source-dirs:     generator
+--   default-language:   Haskell2010
+--   default-extensions: StrictData ImportQualifiedPost
+--   main-is:            Main.hs
+--   other-modules:      CodeGen
+--   build-depends:
+--     , base                 >=4.11 && <5
+--     , containers
+--     , directory
+--     , filepath
+--     , lsp-types:metamodel
+--     , mtl
+--     , prettyprinter
+--     , regex
+--     , text
 
 test-suite lsp-types-test
   type:               exitcode-stdio-1.0
