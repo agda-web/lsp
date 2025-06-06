@@ -1,5 +1,3 @@
-index-state: 2024-12-23T14:00:00Z
-
 packages:
          ./lsp
          ./lsp-types/
